@@ -1,4 +1,4 @@
-package testPulsar
+package test_case
 
 import (
 	"context"
@@ -6,12 +6,20 @@ import (
 	"log"
 	"strconv"
 	"testPulsar/lib/logger"
-	"testPulsar/lib/sync/wait"
 	"time"
 )
 
-func ProduceMsg(client pulsar.Client, wg *wait.Wait, topic string, count int) {
-	defer wg.Done()
+func Case2(brokers string, topic string, count int) {
+
+	client, err := pulsar.NewClient(pulsar.ClientOptions{
+		URL:               brokers,
+		OperationTimeout:  30 * time.Second,
+		ConnectionTimeout: 30 * time.Second,
+	})
+	if err != nil {
+		log.Fatalf("Could not instantiate Pulsar client: %v", err)
+	}
+	defer client.Close()
 
 	producer, err := client.CreateProducer(pulsar.ProducerOptions{
 		Topic: topic,

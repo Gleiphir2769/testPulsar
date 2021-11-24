@@ -8,25 +8,37 @@ import (
 	"testPulsar/test_case"
 )
 
-const brokers = "pulsar://10.109.6.120:6650"
-var typeName = flag.StringP("typeName", "t", "p", "input demo type")
+var caseName = flag.Int32P("case", "c", 1, "input case name")
+var brokerList = flag.StringP("brokers", "b", "", "input brokers url")
+var topic = flag.StringP("topic", "t", "", "input topic name")
+var sub = flag.StringP("sub", "s", "", "input subscription name")
+var count = flag.Int32P("num", "n", -1, "produce/consume msg nums")
 
 func main() {
 	logger.Setup(&logger.Settings{
 		Path:       "logs",
-		Name:       "godis",
+		Name:       "testPulsar",
 		Ext:        "log",
 		TimeFormat: "2006-01-02",
 	})
 	flag.CommandLine.SetNormalizeFunc(wordSepNormalizeFunc)
 	flag.Parse()
-	switch *typeName {
-	case "1":
-		test_case.Case1(brokers)
-	case "2":
-		test_case.Case2(brokers)
-	case "3":
-		test_case.Case3(brokers)
+	if len(*brokerList) == 0 {
+		logger.Error("broker list can not be empty")
+	}
+	if len(*topic) == 0 {
+		logger.Error("topic can not be empty")
+	}
+	if *caseName != 1 && len(*sub) == 0 {
+		logger.Error("sub can not be empty in case 1/3")
+	}
+	switch *caseName {
+	case 1:
+		test_case.Case1(*brokerList, *topic, *sub, int(*count))
+	case 2:
+		test_case.Case2(*brokerList, *topic, int(*count))
+	case 3:
+		test_case.Case3(*brokerList, *topic, *sub, int(*count))
 	default:
 		fmt.Println("Please select test case type")
 	}

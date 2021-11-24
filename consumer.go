@@ -10,11 +10,11 @@ import (
 	"testPulsar/lib/sync/wait"
 )
 
-func ConsumeMsg(client pulsar.Client, msgNum int, wg *wait.Wait) bool {
+func ConsumeMsg(client pulsar.Client, wg *wait.Wait, topic string, sub string, msgNum int) bool {
 	defer wg.Done()
 	consumer, err := client.Subscribe(pulsar.ConsumerOptions{
-		Topic:            "my-topic",
-		SubscriptionName: "my-sub",
+		Topic:            topic,
+		SubscriptionName: sub,
 		Type:             pulsar.Shared,
 	})
 	if err != nil {
@@ -28,8 +28,7 @@ func ConsumeMsg(client pulsar.Client, msgNum int, wg *wait.Wait) bool {
 		logger.Error("create file failed: ", err)
 	}
 
-
-	for  {
+	for {
 		msg, err := consumer.Receive(context.Background())
 		if err != nil {
 			log.Fatal(err)
@@ -45,13 +44,12 @@ func ConsumeMsg(client pulsar.Client, msgNum int, wg *wait.Wait) bool {
 		logger.Debug(output)
 
 		consumer.Ack(msg)
-		count ++
+		count++
 
 		if count >= msgNum {
 			break
 		}
 	}
-
 
 	if err := consumer.Unsubscribe(); err != nil {
 		log.Fatal(err)
