@@ -32,13 +32,16 @@ func main() {
 	if *caseName != 1 && len(*sub) == 0 {
 		logger.Error("sub can not be empty in case 1/3")
 	}
+
+	url := fmt.Sprintf("pulsar://%s:6650", *brokerList)
+
 	switch *caseName {
 	case 1:
-		test_case.Case1(*brokerList, *topic, *sub, int(*count))
+		test_case.Case1(url, *topic, *sub, int(*count))
 	case 2:
-		test_case.Case2(*brokerList, *topic, int(*count))
+		test_case.Case2(url, *topic, int(*count))
 	case 3:
-		test_case.Case3(*brokerList, *topic, *sub, int(*count))
+		test_case.Case3(url, *topic, *sub, int(*count))
 	default:
 		fmt.Println("Please select test case type")
 	}
