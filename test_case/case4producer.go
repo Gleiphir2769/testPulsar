@@ -10,7 +10,6 @@ import (
 )
 
 func Case2(brokers string, topic string, count int) {
-
 	client, err := pulsar.NewClient(pulsar.ClientOptions{
 		URL:               brokers,
 		OperationTimeout:  30 * time.Second,
@@ -33,10 +32,13 @@ func Case2(brokers string, topic string, count int) {
 		count = int(^uint(0) >> 1)
 	}
 
+	clusters := []string{"pulsar-cluster-1", "pulsar-cluster-2"}
+
 	for i := 0; i < count; i++ {
 		msg := []byte("msg" + strconv.Itoa(i))
 		_, err = producer.Send(context.Background(), &pulsar.ProducerMessage{
-			Payload: msg,
+			Payload:             msg,
+			ReplicationClusters: clusters,
 		})
 		if err != nil {
 			logger.Error("Failed to publish message", err)

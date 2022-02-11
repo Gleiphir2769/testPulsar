@@ -19,8 +19,9 @@ func Case3(brokers string, topic string, sub string, count int) {
 
 	// Only subscribe on the specific partition
 	consumer, err := client.Subscribe(pulsar.ConsumerOptions{
-		Topic:            topic,
-		SubscriptionName: sub,
+		Topic:                      topic,
+		SubscriptionName:           sub,
+		ReplicateSubscriptionState: true,
 	})
 
 	if err != nil {

@@ -37,10 +37,13 @@ func main() {
 
 	switch *caseName {
 	case 1:
+		// 边生产边消费
 		test_case.Case1(url, *topic, *sub, int(*count))
 	case 2:
+		// 只生产
 		test_case.Case2(url, *topic, int(*count))
 	case 3:
+		// 只消费
 		test_case.Case3(url, *topic, *sub, int(*count))
 	default:
 		fmt.Println("Please select test case type")
